@@ -11,9 +11,12 @@ To *rotate a face*, do the following:
 1. Look at the center cube of the face. Note its color
 2. Consider which direction you want to rotate the face looking at it head on
   - If you want to rotate the cube clockwise, press the first letter of the
-  color of the center cube
+  color of the center cube. For example, if you'd like to move the face with an
+  orange center clockwise, press <kbd> o </kbd>
   - If you want to rotate the cube counterclockwise, do the same as you would
-  for clockwise, but hold down shift while you are doing so
+  for clockwise, but hold down shift while you are doing so. For example, if
+  you'd like to move the face with a yellow center clockwise, press
+  <kbd> shift </kbd> + <kbd> y </kbd>
 
 To *shuffle* the cube a predetermined number of steps, click the circular arrow
 icon.
