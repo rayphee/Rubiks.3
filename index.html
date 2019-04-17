@@ -1,0 +1,76 @@
+<head>
+  <link rel="stylesheet" href="./css/master.css">
+  <!--<script src="./js/housekeeping.js"></script>-->
+  <script id="vertex-shader" type="x-shader/x-vertex">
+    attribute vec4 vertex;
+    attribute vec4 color;
+    attribute mat4 rotation;
+    varying vec4 vColor;
+
+    uniform mat4 Pmatrix;
+    uniform mat4 Vmatrix;
+    uniform mat4 Mmatrix;
+
+    void main(void){
+      gl_Position = Pmatrix*Vmatrix*Mmatrix*rotation*vertex;
+      vColor = color;
+    }
+  </script>
+  <script id="fragment-shader" type="x-shader/x-fragment">
+    precision mediump float;
+    varying vec4 vColor;
+
+    void main(void){
+      gl_FragColor = vColor;
+    }
+  </script>
+  <script src="./js/jquery-3.4.0.min.js"></script>
+  <script src="./js/webgl-utils.js"></script>
+  <script src="./js/initShaders.js"></script>
+  <script src="./js/MV.js"></script>
+  <script src="./js/cube.js"></script>
+  <title>Rubiks.3</title>
+</head>
+<body>
+  <h1>Rubik's<sup>3</sup></h1>
+  <div id="icon_wrapper">
+    <div id="shuffle" class="icon">
+    </div>
+    <div id="save" class="icon">
+    </div>
+    <div id="load" class="icon">
+      <input id="file_input" type="file" style="display:none">
+    </div>
+    <div id="settings" class="icon">
+    </div>
+  </div>
+  <div id="settings_panel">
+    View Distance
+    <input type="range" min="6" max="9" value="6" step="0.1" id="radius">
+    <br>
+    Cube Inertia
+    <input type="range" min="0.7" max="0.98" value="0.93" step="0.001" id="inertia">
+    <br>
+    Rotation Duration
+    <input type="range" min="10" max="360" value="35" step="1" id="rotation">
+    <br>
+    Number of Shuffle Moves
+    <input type="number" value="30" min="1" max="99" id="shuffle_steps">
+  </div>
+  <div>
+    <canvas width="800", height="800" id="glCanvas">
+    </canvas>
+  </div>
+  <p id="description">
+    Drag anywhere to rotate the view <br>
+    <br>
+    To rotate a face clockwise, enter the first letter of the color of its
+    center cube; hold down shift to rotate it counterclockwise <br>
+    <br>
+    For more options, click the settings icon <br>
+    <br>
+  </p>
+  <p id="congrats">
+    Congrats! You've solved the cube
+  </p>
+</body>
