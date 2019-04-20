@@ -33,4 +33,14 @@ The following parameters are configurable to a reasonable degree:
 - View Distance: How far you are from the cube
 - Cube Inertia: How much "effort" you need to put to position the cube
 - Rotation Duration: How long a rotation will take
-- Number of Shuffle Moves: How many moves the shuffle button will make   
+- Number of Shuffle Moves: How many moves the shuffle button will make
+
+## Future improvements
+There are (obviously) many things to do to make this project better. Here are a
+list of things I'd like to add/improve on (at some point):
+- Rewrite the program so it's better organized (i.e. using classes, better
+  separation of cube logic from rendering logic, etc.)
+- Modularize the program so it's easier to extend (i.e. change the dimension of
+  the cube, change the shape, etc.)
+- Make the controls more intuitive (i.e. not _solely_ rely on the keyboard to
+  interface with the cube, make it easier for mobile users to use the program)
