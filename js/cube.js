@@ -39,6 +39,7 @@ var dX = 0, dY =0;
 var locked = false;
 
 /* CUBE CONSTANTS & VARIABLES */
+const EPSILON = 0.001;
 const CUBIE_DIMENSION = 0.46;
 const CUBIE_GENERALIZED_VERTICES = [
   [-CUBIE_DIMENSION, -CUBIE_DIMENSION, -CUBIE_DIMENSION], // 0
@@ -249,10 +250,33 @@ async function animate_cube(indices, axis, cw) {
   return;
 }
 
+function original_orientation(cs) {
+  thetaX = Math.atan2(cs[2][1], cs[2][2])*180/Math.PI;
+  if(Math.abs(thetaX) > EPSILON)
+    return false;
+  thetaY = Math.atan2(-cs[2][0], Math.hypot(cs[2][1], cs[2][2]))*180/Math.PI;
+  if(Math.abs(thetaY) > EPSILON)
+    return false;
+  thetaZ = Math.atan2(cs[1][0], cs[0][0])*180/Math.PI;
+  if(Math.abs(thetaZ) > EPSILON)
+    return false;
+  return true;
+}
+
 function is_cube_solved() {
   for(var i=0; i<cube_state.length; i++) {
+    if(i == 4|
+        i == 22|
+        i == 12|
+        i == 14|
+        i == 10|
+        i == 16) // The center cubes' orientation does not matter
+        continue;
     if(cube_state[i].cubie != i)
       return false;
+    if(!original_orientation(cube_state[i].rotation))
+      return false;
+    cube_state[i].rotation = mat4(1);
   }
   return true;
 }
