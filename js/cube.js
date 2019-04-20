@@ -268,6 +268,7 @@ function is_cube_solved() {
     if(i == 4|
         i == 22|
         i == 12|
+        i == 13|
         i == 14|
         i == 10|
         i == 16) // The center cubes' orientation does not matter
