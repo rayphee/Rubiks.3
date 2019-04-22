@@ -14,9 +14,9 @@ var canvas;
 var gl;
 var gl_frame;
 var program;
-var vertex_buffer;
-var color_buffer;
+var vertex_buffer, color_buffer;
 var rotation_buffer = Array(4);
+var _Pmatrix, _Vmatrix, _Mmatrix, _vertex, _color, _rotation;
 
 /* MODEL, VIEW, PROJECTION VARIABLES */
 var THETA = 27.25, PHI = 0, RADIUS = 6;
@@ -480,6 +480,26 @@ window.onload = function init() {
   program = initShaders(gl, "vertex-shader", "fragment-shader");
   gl.useProgram(program);
 
+  gl.enable(gl.DEPTH_TEST);
+
+  gl.viewport(0, 0, canvas.width, canvas.height);
+  gl.clearColor(1, 1, 1, 1.0);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+  vertex_buffer = gl.createBuffer();
+  color_buffer = gl.createBuffer();
+  rotation_buffer[0] = gl.createBuffer();
+  rotation_buffer[1] = gl.createBuffer();
+  rotation_buffer[2] = gl.createBuffer();
+  rotation_buffer[3] = gl.createBuffer();
+
+  _Pmatrix = gl.getUniformLocation(program, "Pmatrix");
+  _Vmatrix = gl.getUniformLocation(program, "Vmatrix");
+  _Mmatrix = gl.getUniformLocation(program, "Mmatrix");
+  _vertex = gl.getAttribLocation(program, "vertex");
+  _color = gl.getAttribLocation(program, "color");
+  _rotation = gl.getAttribLocation(program, "rotation");
+
   initialize_cube();
 
   render();
@@ -504,57 +524,26 @@ function render() {
 
   generate_cube();
 
-  gl.enable(gl.DEPTH_TEST);
-
-  gl.viewport(0, 0, canvas.width, canvas.height);
-  gl.clearColor(1, 1, 1, 1.0);
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-  var _Pmatrix = gl.getUniformLocation(program, "Pmatrix");
-  var _Vmatrix = gl.getUniformLocation(program, "Vmatrix");
-  var _Mmatrix = gl.getUniformLocation(program, "Mmatrix");
   gl.uniformMatrix4fv(_Pmatrix, false, flatten(projection_matrix));
   gl.uniformMatrix4fv(_Vmatrix, false, flatten(view_matrix));
   gl.uniformMatrix4fv(_Mmatrix, false, flatten(model_matrix));
 
-  vertex_buffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
   gl.bufferData(gl.ARRAY_BUFFER, flatten(vertices), gl.STATIC_DRAW);
-  var _vertex = gl.getAttribLocation(program, "vertex");
   gl.vertexAttribPointer(_vertex, 4, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(_vertex);
 
-  color_buffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, color_buffer);
   gl.bufferData(gl.ARRAY_BUFFER, flatten(colors), gl.STATIC_DRAW);
-  var _color = gl.getAttribLocation(program, "color");
   gl.vertexAttribPointer(_color, 4, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(_color);
 
-  rotation_buffer[0] = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, rotation_buffer[0]);
-  gl.bufferData(gl.ARRAY_BUFFER, flatten(rotations[0]), gl.STATIC_DRAW);
-  var _rotation = gl.getAttribLocation(program, "rotation");
-  gl.vertexAttribPointer(_rotation, 4, gl.FLOAT, false, 0, 0);
-  gl.enableVertexAttribArray(_rotation);
-
-  rotation_buffer[1] = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, rotation_buffer[1]);
-  gl.bufferData(gl.ARRAY_BUFFER, flatten(rotations[1]), gl.STATIC_DRAW);
-  gl.vertexAttribPointer(_rotation+1, 4, gl.FLOAT, false, 0, 0);
-  gl.enableVertexAttribArray(_rotation+1);
-
-  rotation_buffer[2] = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, rotation_buffer[2]);
-  gl.bufferData(gl.ARRAY_BUFFER, flatten(rotations[2]), gl.STATIC_DRAW);
-  gl.vertexAttribPointer(_rotation+2, 4, gl.FLOAT, false, 0, 0);
-  gl.enableVertexAttribArray(_rotation+2);
-
-  rotation_buffer[3] = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, rotation_buffer[3]);
-  gl.bufferData(gl.ARRAY_BUFFER, flatten(rotations[3]), gl.STATIC_DRAW);
-  gl.vertexAttribPointer(_rotation+3, 4, gl.FLOAT, false, 0, 0);
-  gl.enableVertexAttribArray(_rotation+3);
+  for(var i=0; i<4; i++) {
+    gl.bindBuffer(gl.ARRAY_BUFFER, rotation_buffer[i]);
+    gl.bufferData(gl.ARRAY_BUFFER, flatten(rotations[i]), gl.STATIC_DRAW);
+    gl.vertexAttribPointer(_rotation+i, 4, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(_rotation+i);
+  }
 
   gl.drawArrays(gl.TRIANGLES, 0, 972);
   gl_frame = window.requestAnimationFrame(render);
